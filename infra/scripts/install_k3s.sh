@@ -40,10 +40,11 @@ if command -v k3s &> /dev/null; then
             exit 0
         fi
     fi
-    echo "" 
-    echo "🗑️  Desinstalando K3s existente..."
-    /usr/local/bin/k3s-uninstall.sh || true
-    sleep 2
+    echo ""
+    echo "ℹ️  Se mantiene la instalación existente de K3s (sin desinstalar)"
+    # echo "🗑️  Desinstalando K3s existente..."
+    # /usr/local/bin/k3s-uninstall.sh || true
+    # sleep 2
 fi
 
 gh_group "Requisitos básicos"
