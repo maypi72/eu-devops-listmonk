@@ -55,3 +55,18 @@ jobs:
 
       - name: "Ejecutar instalador de ingress"
         run: infra/scripts/install_ingress.sh
+
+      - name: "Verificar script de instalación de cert-manager"
+        run: |
+          test -f infra/scripts/install_cert_manager.sh || { echo "::error::Falta infra/scripts/install_cert_manager.sh"; exit 1; }
+          if [ ! -x infra/scripts/install_cert_manager.sh ]; then
+            echo "infra/scripts/install_cert_manager.sh no es ejecutable, ajustando permisos..."
+            chmod +x infra/scripts/install_cert_manager.sh
+          fi
+
+      - name: "Ejecutar instalador de cert-manager"
+        env:
+          APP_NAMESPACE: listmonk
+          LOCAL_DOMAIN: listmonk.local
+          TLS_SECRET_NAME: listmonk-local-tls
+        run: infra/scripts/install_cert_manager.sh

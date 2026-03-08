@@ -1,0 +1,23 @@
+# Valores para cert-manager en entorno de laboratorio (k3s)
+installCRDs: true
+
+prometheus:
+  enabled: false
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+cainjector:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 48Mi
+
+webhook:
+  timeoutSeconds: 15
+  resources:
+    requests:
+      cpu: 25m
+      memory: 48Mi
