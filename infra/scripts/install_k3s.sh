@@ -110,6 +110,26 @@ sleep 10
 # Configurar kubeconfig
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
+gh_group "Comprobar e instalar Helm"
+if ! command -v helm >/dev/null 2>&1; then
+    echo "📦 Helm no está instalado, instalando..."
+    if [ "$EUID" -ne 0 ] && command -v sudo >/dev/null 2>&1; then
+        curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | sudo -n bash
+    else
+        curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+    fi
+else
+    echo "✅ Helm ya está instalado"
+fi
+
+if command -v helm >/dev/null 2>&1; then
+    helm version --short || true
+else
+    echo -e "${RED}❌ Helm no quedó instalado correctamente${NC}"
+    exit 1
+fi
+gh_group_end
+
 # instalar kubectl standalone si no existe (para que cualquier usuario pueda usarlo)
 if ! command -v kubectl &> /dev/null; then
     echo "📦 instalando kubectl independiente..."
@@ -162,12 +182,4 @@ else
 fi
 
 echo "✅ Instalación completada"
-gh_group_end
-gh_group "Instalar Helm"
-if ! command -v helm >/dev/null 2>&1; then
-    echo "[INFO] Instalando Helm..."
-    curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-else
-    echo "[INFO] Helm ya instalado"
-fi
 gh_group_end
