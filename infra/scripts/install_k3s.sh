@@ -17,6 +17,17 @@ gh_group_end() {
   fi
 }
 
+# Ejecuta comandos con privilegios (root o sudo) cuando sea necesario.
+run_privileged() {
+    if [ "${EUID:-$(id -u)}" -eq 0 ]; then
+        "$@"
+    elif command -v sudo >/dev/null 2>&1; then
+        sudo "$@"
+    else
+        return 1
+    fi
+}
+
 echo "🔧 Instalación de K3s para MF8"
 echo ""
 
@@ -100,7 +111,7 @@ K3S_EXEC_OPTS="--disable traefik --disable servicelb --flannel-backend=none --di
 curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="$K3S_EXEC_OPTS" sh -s -
 
 # permisos del kubeconfig global
-chmod 644 /etc/rancher/k3s/k3s.yaml || true
+run_privileged chmod 644 /etc/rancher/k3s/k3s.yaml || true
 
 # esperar API server
 echo ""
@@ -143,8 +154,12 @@ if ! command -v kubectl &> /dev/null; then
     mv /tmp/kubectl /usr/local/bin/kubectl
 fi
 
-# Asegurar permisos para que todos los usuarios puedan leer el kubeconfig
-chmod a+r /etc/rancher/k3s/k3s.yaml || true
+# Asegurar permisos y variable global para que todos los usuarios puedan usar kubectl
+run_privileged chmod 755 /etc/rancher /etc/rancher/k3s || true
+run_privileged chmod 644 /etc/rancher/k3s/k3s.yaml || true
+if printf 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml\n' | run_privileged tee /etc/profile.d/k3s-kubeconfig.sh >/dev/null; then
+    run_privileged chmod 644 /etc/profile.d/k3s-kubeconfig.sh || true
+fi
 
 
 
