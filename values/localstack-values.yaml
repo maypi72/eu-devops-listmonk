@@ -1,0 +1,14 @@
+# Valores base para LocalStack (entorno de laboratorio en k3s)
+# El script tambien refuerza el NodePort para garantizar valor estable.
+replicaCount: 1
+
+service:
+  type: NodePort
+  edgeService:
+    port: 4566
+    targetPort: 4566
+    nodePort: 31566
+
+# Persistencia desactivada para laboratorio
+persistence:
+  enabled: false

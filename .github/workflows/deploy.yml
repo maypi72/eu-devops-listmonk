@@ -70,3 +70,19 @@ jobs:
           LOCAL_DOMAIN: listmonk.local
           TLS_SECRET_NAME: listmonk-local-tls
         run: infra/scripts/install_cert_manager.sh
+
+      - name: "Verificar script de instalación de LocalStack"
+        run: |
+          test -f infra/scripts/install_localstack.sh || { echo "::error::Falta infra/scripts/install_localstack.sh"; exit 1; }
+          if [ ! -x infra/scripts/install_localstack.sh ]; then
+            echo "infra/scripts/install_localstack.sh no es ejecutable, ajustando permisos..."
+            chmod +x infra/scripts/install_localstack.sh
+          fi
+
+      - name: "Ejecutar instalador de LocalStack"
+        env:
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRETE_KEY: ${{ secrets.AWS_SECRETE_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          LOCALSTACK_NODEPORT: "31566"
+        run: infra/scripts/install_localstack.sh
