@@ -30,16 +30,28 @@ jobs:
       - name: "Checkout del repositorio"
         uses: actions/checkout@v3
 
-      #verificar existencia del script antes de intentar ejecutarlo
-      - name: "Verificar existencia del script de instalación"      
+      # verificar existencia del script antes de intentar ejecutarlo
+      - name: "Verificar script de instalación de k3s"
         run: |
-           test -f infra/scripts/install_k3s.sh || { echo "Falta infra/scripts/install_k3s.sh"; exit 1; }
-
-      - name: "Hacer ejecutable el instalador"
-        run: chmod +x infra/scripts/install_k3s.sh
+          test -f infra/scripts/install_k3s.sh || { echo "::error::Falta infra/scripts/install_k3s.sh"; exit 1; }
+          if [ ! -x infra/scripts/install_k3s.sh ]; then
+            echo "infra/scripts/install_k3s.sh no es ejecutable, ajustando permisos..."
+            chmod +x infra/scripts/install_k3s.sh
+          fi
 
       - name: "Ejecutar instalador de k3s"
         env:
           # variables opcionales que puedes ajustar desde el workflow o desde secrets
           K3S_CHANNEL: stable
         run: infra/scripts/install_k3s.sh
+
+      - name: "Verificar script de instalación de ingress"
+        run: |
+          test -f infra/scripts/install_ingress.sh || { echo "::error::Falta infra/scripts/install_ingress.sh"; exit 1; }
+          if [ ! -x infra/scripts/install_ingress.sh ]; then
+            echo "infra/scripts/install_ingress.sh no es ejecutable, ajustando permisos..."
+            chmod +x infra/scripts/install_ingress.sh
+          fi
+
+      - name: "Ejecutar instalador de ingress"
+        run: infra/scripts/install_ingress.sh
