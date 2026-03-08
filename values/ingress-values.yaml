@@ -1,8 +1,9 @@
 # Configuración optimizada para K3s en Laboratorio
 controller:
   kind: DaemonSet
-  hostNetwork: true
-  dnsPolicy: ClusterFirstWithHostNet
+  # Evita bind directo a puertos del host (80/443) para no colisionar con otros servicios
+  hostNetwork: false
+  dnsPolicy: ClusterFirst
   service:
     type: ClusterIP
   admissionWebhooks:
