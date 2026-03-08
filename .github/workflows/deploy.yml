@@ -27,6 +27,11 @@ jobs:
       - name: "Checkout del repositorio"
         uses: actions/checkout@v3
 
+      #verificar existencia del script antes de intentar ejecutarlo
+      - name: "Verificar existencia del script de instalación"      
+        run: |
+           test -f infra/scripts/install_k3s.sh || { echo "Falta infra/scripts/install_k3s.sh"; exit 1; }
+
       - name: "Hacer ejecutable el instalador"
         run: chmod +x infra/scripts/install_k3s.sh
 
