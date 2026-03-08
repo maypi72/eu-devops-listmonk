@@ -21,7 +21,7 @@ export KUBECONFIG="${KUBECONFIG:-/etc/rancher/k3s/k3s.yaml}"
 INGRESS_NAMESPACE="${INGRESS_NAMESPACE:-ingress-nginx}"
 INGRESS_CHART_VERSION="4.10.1"
 HELM_REPO_NAME="ingress-nginx"
-HELM_REPO_URL="https://kubernetes.github.io"
+HELM_REPO_URL="https://kubernetes.github.io/ingress-nginx"
 RELEASE_NAME="ingress-nginx"
 
 # Helpers para GitHub Actions
