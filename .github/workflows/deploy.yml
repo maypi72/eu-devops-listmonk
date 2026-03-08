@@ -15,12 +15,15 @@ jobs:
         run: |
           echo "Runner: $RUNNER_NAME"  # información útil para debugging
 
-      - name: "Verificar sudo sin contraseña"
+      - name: "Verificar privilegios del runner"
         run: |
-          if sudo -n true 2>/dev/null; then
+          if [ "$(id -u)" -eq 0 ]; then
+            echo "runner ejecutándose como root"
+          elif command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
             echo "sudo no pide contraseña"
           else
-            echo "::error::El usuario del runner necesita sudo NOPASSWD o ejecutar como root"
+            echo "::error::El usuario del runner debe tener sudo NOPASSWD o el runner debe ejecutarse como root"
+            echo "::error::Solución: crear /etc/sudoers.d/github-runner con 'USUARIO ALL=(ALL) NOPASSWD: ALL'"
             exit 1
           fi
 
