@@ -1,0 +1,37 @@
+name: "deploy"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  install:
+    name: Desplegar k3s en self-hosted
+    runs-on: [self-hosted,linux]
+
+    steps:
+      - name: "Comprobar que la acción se está ejecutando en un runner válido"
+        run: |
+          echo "Runner: $RUNNER_NAME"  # información útil para debugging
+
+      - name: "Verificar sudo sin contraseña"
+        run: |
+          if sudo -n true 2>/dev/null; then
+            echo "sudo no pide contraseña"
+          else
+            echo "::error::El usuario del runner necesita sudo NOPASSWD o ejecutar como root"
+            exit 1
+          fi
+
+      - name: "Checkout del repositorio"
+        uses: actions/checkout@v3
+
+      - name: "Hacer ejecutable el instalador"
+        run: chmod +x infra/scripts/install_k3s.sh
+
+      - name: "Ejecutar instalador de k3s"
+        env:
+          # variables opcionales que puedes ajustar desde el workflow o desde secrets
+          K3S_CHANNEL: stable
+        run: infra/scripts/install_k3s.sh

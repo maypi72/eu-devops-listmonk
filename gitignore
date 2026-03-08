@@ -1,0 +1,35 @@
+# Ignore local environment files
+.env
+
+# Ignore kubectl config and other credentials
+.kube/
+*.kubeconfig
+
+# Localstack data
+data/
+.localstack/
+
+# Terraform state and backup files
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+
+# Helm temporary and cache
+helmfile.d/*
+*.tgz
+
+# Logs and temporary files
+*.log
+tmp/
+
+# IDE/editor files
+.vscode/
+*.swp
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
