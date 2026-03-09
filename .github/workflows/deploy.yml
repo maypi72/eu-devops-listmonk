@@ -86,3 +86,19 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           LOCALSTACK_NODEPORT: "31566"
         run: infra/scripts/install_localstack.sh
+
+      - name: "Verificar script de bucket tfstate"
+        run: |
+          test -f infra/scripts/create_tfstate_bucket.sh || { echo "::error::Falta infra/scripts/create_tfstate_bucket.sh"; exit 1; }
+          if [ ! -x infra/scripts/create_tfstate_bucket.sh ]; then
+            echo "infra/scripts/create_tfstate_bucket.sh no es ejecutable, ajustando permisos..."
+            chmod +x infra/scripts/create_tfstate_bucket.sh
+          fi
+
+      - name: "Crear bucket S3 para tfstate en LocalStack"
+        env:
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRETE_KEY: ${{ secrets.AWS_SECRETE_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          TFSTATE_BUCKET: terraform-tfstate
+        run: infra/scripts/create_tfstate_bucket.sh
