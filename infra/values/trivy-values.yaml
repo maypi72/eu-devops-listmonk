@@ -1,0 +1,16 @@
+trivy:
+  ignoreUnfixed: true
+
+operator:
+  replicas: 1
+
+serviceMonitor:
+  enabled: false
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 300m
+    memory: 512Mi

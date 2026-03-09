@@ -85,6 +85,20 @@ jobs:
           SEALED_SECRETS_RELEASE_NAME: sealed-secrets
         run: infra/scripts/install_sealed_secrets.sh
 
+      - name: "Verificar script de instalación de Trivy"
+        run: |
+          test -f infra/scripts/install_trivy.sh || { echo "::error::Falta infra/scripts/install_trivy.sh"; exit 1; }
+          if [ ! -x infra/scripts/install_trivy.sh ]; then
+            echo "infra/scripts/install_trivy.sh no es ejecutable, ajustando permisos..."
+            chmod +x infra/scripts/install_trivy.sh
+          fi
+
+      - name: "Ejecutar instalador de Trivy"
+        env:
+          TRIVY_NAMESPACE: trivy-system
+          TRIVY_RELEASE_NAME: trivy-operator
+        run: infra/scripts/install_trivy.sh
+
       - name: "Verificar script de instalación de LocalStack"
         run: |
           test -f infra/scripts/install_localstack.sh || { echo "::error::Falta infra/scripts/install_localstack.sh"; exit 1; }
