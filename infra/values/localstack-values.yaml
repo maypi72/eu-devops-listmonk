@@ -9,6 +9,27 @@ service:
     targetPort: 4566
     nodePort: 31566
 
-# Persistencia desactivada para laboratorio
+extraEnvVars:
+  #- name: DEBUG
+   # value: "1"
+  - name: LOCALSTACK_AUTH_TOKEN
+    value: ""   #versión Community
+
+resources:
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+
+
+# Persistencia habilitada
 persistence:
-  enabled: false
+  enabled: true
+  size: 1Gi
+  storageClass: local-path
+  
+# Logs más detallados
+log:
+  level: debug
