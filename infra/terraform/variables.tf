@@ -28,3 +28,9 @@ variable "environment" {
   default     = "dev"
 }
 
+variable "docker_registry_bucket_name" {
+  description = "Dedicated S3 bucket name for Docker Registry storage"
+  type        = string
+  default     = "docker-registry-data"
+}
+
