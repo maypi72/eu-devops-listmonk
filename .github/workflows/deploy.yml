@@ -53,7 +53,7 @@ jobs:
             chmod +x infra/scripts/install_ingress.sh
           fi
 
-      - name: "Ejecutar instalador de ingress"
+      - name: "Ejecutar instalador de ingress controller"
         run: infra/scripts/install_ingress.sh
 
       - name: "Verificar script de instalación de cert-manager"
