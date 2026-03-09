@@ -1,6 +1,8 @@
 # Ignore local environment files
 .env
 
+
+
 # Ignore kubectl config and other credentials
 .kube/
 *.kubeconfig
