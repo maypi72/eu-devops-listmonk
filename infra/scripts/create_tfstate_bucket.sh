@@ -102,9 +102,23 @@ else
         aws --endpoint-url "$LOCALSTACK_ENDPOINT_URL" s3api create-bucket \
             --bucket "$TFSTATE_BUCKET"
     else
-        aws --endpoint-url "$LOCALSTACK_ENDPOINT_URL" s3api create-bucket \
+        set +e
+        CREATE_OUTPUT="$(aws --endpoint-url "$LOCALSTACK_ENDPOINT_URL" s3api create-bucket \
             --bucket "$TFSTATE_BUCKET" \
-            --create-bucket-configuration LocationConstraint="$AWS_DEFAULT_REGION"
+            --create-bucket-configuration LocationConstraint="$AWS_DEFAULT_REGION" 2>&1)"
+        CREATE_EXIT_CODE=$?
+        set -e
+
+        if [ $CREATE_EXIT_CODE -ne 0 ]; then
+            if echo "$CREATE_OUTPUT" | grep -q "InvalidLocationConstraint"; then
+                echo "[WARN] LocalStack rechazo LocationConstraint '$AWS_DEFAULT_REGION'. Reintentando sin LocationConstraint..."
+                aws --endpoint-url "$LOCALSTACK_ENDPOINT_URL" s3api create-bucket \
+                    --bucket "$TFSTATE_BUCKET"
+            else
+                echo "$CREATE_OUTPUT"
+                exit $CREATE_EXIT_CODE
+            fi
+        fi
     fi
     echo "[SUCCESS] Bucket '$TFSTATE_BUCKET' creado"
 fi
