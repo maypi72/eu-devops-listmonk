@@ -102,3 +102,21 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           TFSTATE_BUCKET: terraform-tfstate
         run: infra/scripts/create_tfstate_bucket.sh
+
+      - name: "Verificar script init_terraform"
+        run: |
+          test -f infra/scripts/init_terraform.sh || { echo "::error::Falta infra/scripts/init_terraform.sh"; exit 1; }
+          if [ ! -x infra/scripts/init_terraform.sh ]; then
+            echo "infra/scripts/init_terraform.sh no es ejecutable, ajustando permisos..."
+            chmod +x infra/scripts/init_terraform.sh
+          fi
+
+      - name: "Terraform init (instala si falta)"
+        env:
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRETE_KEY: ${{ secrets.AWS_SECRETE_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          TFSTATE_BUCKET: terraform-tfstate
+          TFSTATE_KEY: bootstrap/terraform.tfstate
+          TERRAFORM_VERSION: "1.8.5"
+        run: infra/scripts/init_terraform.sh
