@@ -7,9 +7,9 @@ echo "[INFO] === K3s Lab: Instalacion de cert-manager (Self-Signed) ==="
 # Configuracion dinamica de rutas
 # -----------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VALUES_FILE="$SCRIPT_DIR/../../values/cert-manager-values.yaml"
+VALUES_FILE="$SCRIPT_DIR/../values/cert-manager-values.yaml"
 if [ ! -f "$VALUES_FILE" ] && [ -n "${GITHUB_WORKSPACE:-}" ]; then
-    VALUES_FILE="$GITHUB_WORKSPACE/values/cert-manager-values.yaml"
+    VALUES_FILE="$GITHUB_WORKSPACE/infra/values/cert-manager-values.yaml"
 fi
 
 # kubeconfig por defecto en k3s
@@ -71,6 +71,12 @@ kubectl create namespace "$CERT_MANAGER_NAMESPACE" --dry-run=client -o yaml | ku
 echo "[INFO] Actualizando repo Helm $HELM_REPO_NAME..."
 helm repo add "$HELM_REPO_NAME" "$HELM_REPO_URL" --force-update
 helm repo update "$HELM_REPO_NAME"
+
+if helm status "$RELEASE_NAME" -n "$CERT_MANAGER_NAMESPACE" >/dev/null 2>&1; then
+  echo "[INFO] Release '$RELEASE_NAME' ya existe en namespace '$CERT_MANAGER_NAMESPACE': se aplicara upgrade."
+else
+  echo "[INFO] Release '$RELEASE_NAME' no existe en namespace '$CERT_MANAGER_NAMESPACE': se realizara instalacion inicial."
+fi
 
 echo "[INFO] Helm upgrade/install de cert-manager..."
 helm upgrade --install "$RELEASE_NAME" "$HELM_REPO_NAME/cert-manager" \

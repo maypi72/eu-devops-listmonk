@@ -7,11 +7,11 @@ echo "[INFO] === K3s Lab: Instalación NGINX Ingress (Calico Compatible) ==="
 # Configuración Dinámica de Rutas
 # -----------------------------
 # Calculamos la ruta base del script para localizar el archivo de values.
-# Prioridad: ruta relativa al repo (../../values) y fallback a GITHUB_WORKSPACE.
+# Prioridad: ruta relativa al repo (../values) y fallback a GITHUB_WORKSPACE.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VALUES_FILE="$SCRIPT_DIR/../../values/ingress-values.yaml"
+VALUES_FILE="$SCRIPT_DIR/../values/ingress-values.yaml"
 if [ ! -f "$VALUES_FILE" ] && [ -n "${GITHUB_WORKSPACE:-}" ]; then
-    VALUES_FILE="$GITHUB_WORKSPACE/values/ingress-values.yaml"
+    VALUES_FILE="$GITHUB_WORKSPACE/infra/values/ingress-values.yaml"
 fi
 
 # Forzamos KUBECONFIG para evitar errores de permisos/autoridad

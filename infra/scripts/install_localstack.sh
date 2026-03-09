@@ -7,9 +7,9 @@ echo "[INFO] === K3s Lab: Instalacion de LocalStack (S3 + Secrets Manager) ==="
 # Configuracion dinamica de rutas
 # -----------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VALUES_FILE="$SCRIPT_DIR/../../values/localstack-values.yaml"
+VALUES_FILE="$SCRIPT_DIR/../values/localstack-values.yaml"
 if [ ! -f "$VALUES_FILE" ] && [ -n "${GITHUB_WORKSPACE:-}" ]; then
-    VALUES_FILE="$GITHUB_WORKSPACE/values/localstack-values.yaml"
+    VALUES_FILE="$GITHUB_WORKSPACE/infra/values/localstack-values.yaml"
 fi
 
 # kubeconfig por defecto en k3s
