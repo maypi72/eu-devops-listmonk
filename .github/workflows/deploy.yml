@@ -121,28 +121,3 @@ jobs:
           TERRAFORM_VERSION: "1.8.5"
         run: infra/scripts/init_terraform.sh
 
-      - name: "Terraform apply (crear bucket docker-registry-data)"
-        env:
-          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRETE_KEY: ${{ secrets.AWS_SECRETE_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-        run: |
-          terraform -chdir=infra/terraform apply -auto-approve
-
-      - name: "Verificar script de instalación de Docker Registry"
-        run: |
-          test -f infra/scripts/install_docker_registry.sh || { echo "::error::Falta infra/scripts/install_docker_registry.sh"; exit 1; }
-          if [ ! -x infra/scripts/install_docker_registry.sh ]; then
-            echo "infra/scripts/install_docker_registry.sh no es ejecutable, ajustando permisos..."
-            chmod +x infra/scripts/install_docker_registry.sh
-          fi
-
-      - name: "Ejecutar instalador de Docker Registry"
-        env:
-          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRETE_KEY: ${{ secrets.AWS_SECRETE_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          REGISTRY_NAMESPACE: docker-registry
-          REGISTRY_RELEASE_NAME: docker-registry
-          REGISTRY_S3_BUCKET: docker-registry-data
-        run: infra/scripts/install_docker_registry.sh
