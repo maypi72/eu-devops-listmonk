@@ -62,7 +62,8 @@ resolve_localstack_endpoint() {
 
 install_terraform() {
     if command -v terraform >/dev/null 2>&1; then
-        echo "[INFO] Terraform ya esta instalado: $(terraform version | head -n1)"
+        echo "[INFO] Terraform ya esta instalado"
+        terraform version
         return 0
     fi
 
@@ -95,7 +96,7 @@ install_terraform() {
     run_privileged install -m 0755 "$TMP_DIR/terraform" /usr/local/bin/terraform
     rm -rf "$TMP_DIR"
 
-    terraform version | head -n1
+    terraform version
 }
 
 gh_group "Pre-chequeos"
