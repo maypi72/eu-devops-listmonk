@@ -71,6 +71,20 @@ jobs:
           TLS_SECRET_NAME: listmonk-local-tls
         run: infra/scripts/install_cert_manager.sh
 
+      - name: "Verificar script de instalación de Sealed Secrets"
+        run: |
+          test -f infra/scripts/install_sealed_secrets.sh || { echo "::error::Falta infra/scripts/install_sealed_secrets.sh"; exit 1; }
+          if [ ! -x infra/scripts/install_sealed_secrets.sh ]; then
+            echo "infra/scripts/install_sealed_secrets.sh no es ejecutable, ajustando permisos..."
+            chmod +x infra/scripts/install_sealed_secrets.sh
+          fi
+
+      - name: "Ejecutar instalador de Sealed Secrets"
+        env:
+          SEALED_SECRETS_NAMESPACE: kube-system
+          SEALED_SECRETS_RELEASE_NAME: sealed-secrets
+        run: infra/scripts/install_sealed_secrets.sh
+
       - name: "Verificar script de instalación de LocalStack"
         run: |
           test -f infra/scripts/install_localstack.sh || { echo "::error::Falta infra/scripts/install_localstack.sh"; exit 1; }
